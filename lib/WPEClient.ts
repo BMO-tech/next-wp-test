@@ -1,28 +1,26 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-export class ApiClientClass {
+export class WPEClientClass {
   instance!: AxiosInstance;
   defaultConfig!: AxiosRequestConfig;
 
-  url = process.env.API_URL || 'http://localhost';
-  prefix = process.env.API_PREFIX || 'wp-json/wp/v2';
-
-  constructor(prefix?: string) {
+  constructor() {
     this.defaultConfig = {
-      baseURL: `${this.url}/${prefix || this.prefix}`,
+      baseURL: 'https://wpengine.com/wp-json/wp/v2',
     };
+
     this.instance = axios.create(this.defaultConfig);
   }
 
+  // Get From WPE API
   async get(path: string): Promise<any> {
     try {
       const resp: AxiosResponse = await this.instance.get(path);
       return resp.data;
     } catch (e) {
-      console.log('ERROR', e);
+      console.error('WPE Client Error:', e);
     }
   }
 }
 
-export const ApiClient = new ApiClientClass();
-export type { AxiosResponse };
+export const WPEClient = new WPEClientClass();

@@ -1,24 +1,30 @@
-import { GetStaticProps } from 'next';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import { ApiClientClass } from '@/lib/ApiClient';
+import { IMenuItem } from '@/lib/models';
 
-export default function TopNav({ menuItems }) {
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
+import Container from 'react-bootstrap/Container';
+
+function TopNav(props: any) {
+  const menuItems: IMenuItem[] = props.menuItems;
   return (
-    <div>
-      <AppBar>
-        <Toolbar>
-          <Typography variant="h6">BMOPress</Typography>
-        </Toolbar>
-      </AppBar>
-    </div>
+    <Navbar bg="dark" variant="dark" expand="lg" fixed="top">
+      <Container fluid>
+        <Navbar.Brand href="/" className="mr-auto">
+          WordPress Hosting Prices
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="navbar" />
+        <Navbar.Collapse id="navbar">
+          <Nav className="ml-auto">
+            {menuItems.map((item: IMenuItem) => (
+              <Nav.Link key={item.ID} href={item.url}>
+                {item.title}
+              </Nav.Link>
+            ))}
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const MenuClient = new ApiClientClass('wp-json/wp-api-menus/v2/menus');
-  const menuItems = await MenuClient.get('menu-locations/primary');
-
-  return { props: { menuItems } };
-};
+export default TopNav;
